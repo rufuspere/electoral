@@ -58,8 +58,6 @@ for item in df2:
 df2.head()
 
 # %%
-
-# %%
 party1=set(df2.loc[1])
 grupos=list(party1)
 party2=pd.Series(df2.columns.values,index=df2.columns.values)
@@ -199,19 +197,19 @@ dfaux2=df0[W2[0:]]
 
 
 # %%
-#df0
+#df1
 
 df1=pd.concat([dfaux0,dfaux1,dfaux2], axis=1)
 
 
 # %%
-estructura(df0)
+estructura(df1)
 
 # %%
 #eliminamos ciertas columnas innecesarias (Censo CERA, Mesas Electorales...)
 #para obtener df1
 
-df1 = df1.drop(df0.columns[[ 4,5,6,8,9,10]], axis=1)
+df1 = df1.drop(df1.columns[[ 4,5,6,8,9,10]], axis=1)
 
 
 # %%
@@ -233,15 +231,12 @@ df1.insert(loc = 5,
 
 
 # %%
-df1.loc[1][:]
-
-# %%
-df1.rename(columns=Var, inplace=True)
+df1.loc[1][7:20]
 
 # %%
 for x in l:
     columna='%'+x
-    df1[columna]=df1[x]/df1['VOTOS_VÁLIDOS']
+    df1[columna]=df1[x+'Votos']/df1['VOTOS_VÁLIDOS']
 
 
 # %%
@@ -249,6 +244,121 @@ df1.head()
 
 
 # %%
+df1.loc[0]['1Votos':'7Votos']
+
+# %%
+#PARTE II: INTRODUCIR GRUPOS
+
+# %%
+vot_grupos=['VDERECHA',
+'VCENTRO',
+'VIZQUIERDA',
+'VNACIONALISTAS',
+'VOTROS']
+
+# %%
+import re
+#asignar a cada grupo sus partidos para votos
+B=vot_grupos
+list_vgroups = {key: None for key in B}
+for x in vot_grupos:#nombres de los grupos (CENTRO, DERECHA,...)
+    C=[]
+    
+    for i in df2.loc[2][:]:#nombres de los partidos (1,2,...NPARTIDOS)
+        if df2.loc[1][i] ==re.sub('V', '', x):
+            C.append(str(i)+'Votos')
+    #print(x,C)
+    list_vgroups[x]=C
+
+# %%
+list_vgroups
+
+# %%
+grupos=['DERECHA',
+'CENTRO',
+'IZQUIERDA',
+'NACIONALISTAS',
+'OTROS']
+
+# %%
+new_grupos=dict()
+for x in vot_grupos:
+    new_grupos[x] = list_groups[x[1:]]
+
+# %%
+new_grupos
+
+# %%
+#asignar a cada grupo sus partidos para escaños
+B=grupos
+list_dgroups = {key: None for key in B}
+for x in grupos:#nombres de los grupos (CENTRO, DERECHA,...)
+    C=[]
+    
+    for i in df2.loc[2][:]:#nombres de los partidos (1,2,...NPARTIDOS)
+        if df2.loc[1][i] ==x:
+            C.append(str(i)+'Diputados')
+    #print(x,C)
+    list_dgroups[x]=C
+
+# %%
+list_dgroups
+
+# %%
+list_vgroups
+
+# %%
+df1 = df1.reindex(columns =df1.columns.tolist() + grupos)
+df1 = df1.reindex(columns =df1.columns.tolist() + vot_grupos)
+df1 = df1.fillna(0)
+
+# %%
 estructura(df1)
+
+# %%
+df1.loc[0]['1Votos']
+
+# %%
+#votos por grupos por provincias
+for j in range (N_PROV):#provincias
+    print('\n','PROVINCIA',df1.loc[j]['PROVINCIA'].strip(),f'{j:,.0f}','\n')
+    S=0
+    for x in vot_grupos:#grupos de partidos
+        print(x, f'{df1.loc[j][list_vgroups[x]].sum():,.0f}')
+        S=S+df1.loc[j][list_vgroups[x]].sum()
+    print('--TOTAL VOTOS ',f'{S:,.0f}')
+
+# %%
+#diputados por grupos por provincias
+for j in range (N_PROV):#provincias
+    print('\n','PROVINCIA',df1.loc[j]['PROVINCIA'].strip(),f'{j:,.0f}','\n')
+    S=0
+    for x in grupos:#grupos de partidos
+        print(x, f'{df1.loc[j][list_dgroups[x]].sum():,.0f}')
+        S=S+df1.loc[j][list_dgroups[x]].sum()
+    print('--TOTAL DIPUTADOS ',f'{S:,.0f}')
+
+# %%
+#votos por grupos por provincias
+for j in range (N_PROV):#provincias
+    S=0
+    for x in vot_grupos:#grupos de partidos
+        df1.loc[j,x]=df1.loc[j][list_vgroups[x]].sum()
+
+# %%
+#diputados por grupos por provincias
+for j in range (N_PROV):#provincias
+    S=0
+    for x in grupos:#grupos de partidos
+        df1.loc[j,x]=df1.loc[j][list_dgroups[x]].sum()
+
+# %%
+df1=df1.rename(columns=Var)
+
+# %%
+estructura(df1)
+
+# %%
+df1=df1.drop(vot_grupos, axis=1)
 
 # %%
