@@ -359,6 +359,28 @@ df1=df1.rename(columns=Var)
 estructura(df1)
 
 # %%
-df1=df1.drop(vot_grupos, axis=1)
+df1.loc[0]['%1']
 
 # %%
+#PARTE III: ELIMINAR CANDIDATURAS DE <3%
+
+# %%
+df3=df1.copy()
+for x in l:
+    columna='%'+x
+    df3[columna]=df3[x]/df3['VOTOS_VÁLIDOS']
+    df3[x][df3[columna] < 0.03] = 0
+
+# %%
+df3.loc[0]['%2']
+
+# %%
+df3.insert(loc = 5,
+          column = 'VOTOS_REPARTIR',
+          value =df3[l].sum(axis=1))
+
+# %%
+df3[l].sum(axis=1)#sumas de votos >3%
+
+# %%
+df1[l].sum(axis=1)#sumas de votos válidos
