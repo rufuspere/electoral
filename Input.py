@@ -395,6 +395,9 @@ if F=='Y' or 'Y'.lower():
 
 # +
 #PARTE V: COMPROBAR SI HAY EMPATES
+
+# +
+
 #vemos la lista de los valores repetidos en cada provincia:  repitentes[I] extaídos de lista_votos[I]
 repitentes=[[] for i in range(N_PROV) ]
 S=0
