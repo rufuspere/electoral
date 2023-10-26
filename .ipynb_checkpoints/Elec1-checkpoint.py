@@ -5,7 +5,7 @@
 
 # %%
 import os 
-print(os.chdir("G:\\dHondt"))
+os.chdir("G:\\dHondt")
 
 # %%
 print('Directorio de trabajo: ',os.getcwd())
@@ -56,6 +56,9 @@ for item in df2:
 
 # %%
 df2.head()
+
+# %%
+estructura(df0)
 
 # %%
 party1=set(df2.loc[1])
