@@ -29,8 +29,27 @@ print('--4) Lista de votos por grupo político:\n     Votos_y_Escaños_Grupos(da
 print('--5) Lista de votos y escaños por CA:\n     Votos_y_Diputados(Com)')
 print('--6) Lista de votos y escaños por provincia:\n     VotEscaño_Prov(dataFrame,x)')
 print('--7) Comunidades con sus provincias:\n     Com_Aut()')
+print('NO OLVIDE AÑADIR EL PREFIJO aux. AL NOMBRE DE LA FUNCIÓN: aux.provincia(codigo)')
 
 # %%
-aux.provincia(1)
+print ("\nAntes de iniciar Eleccion3 compruebe los resultados con las funciones definidas previamente o con consultas propias")
+
+# %%
+raise SystemExit("El programa se detiene aquí pero puede llamar a las funciones y ejecutar celdas posteriores")
+
+# %%
+aux.Com_Aut()
+
+# %%
+aux.provincia(42)
+
+# %%
+F=input("¿DESEA EJECUTAR Eleccion3? (Y/N)\n")
+if F=='Y' or F=='Y'.lower():
+    with open("Eleccion3.py", mode="r", encoding="utf-8") as Eleccion3:
+        code = Eleccion3.read()
+        exec(code)
+    
+
 
 # %%

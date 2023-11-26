@@ -1,44 +1,46 @@
-#!/usr/bin/env python
-# coding: utf-8
-# %%
-#Eleccion1: CÁLCULO DE ESCAÑOS
-
-
-# %%
-#PARTE 0: ESTABLECER DIRECTORIO DE TRABAJO
-
-# %%
-dire=input('Introducir directorio de trabajo: \n')
-
-# %%
-import os, pickle
-os.chdir(dire)
-w = open(dire+"\\dire.pkl","wb")
-pickle.dump(dire,w)
-w.close()
-import sys
-sys.path.append(dire)
+# ---
+# jupyter:
+#   jupytext:
+#     formats: py:percent
+#     text_representation:
+#       extension: .py
+#       format_name: percent
+#       format_version: '1.3'
+#       jupytext_version: 1.15.2
+#   kernelspec:
+#     display_name: Python 3 (ipykernel)
+#     language: python
+#     name: python3
+# ---
 
 # %%
-print('Directorio de trabajo: ',os.getcwd())
+#Eleccion3: REASIGNACIÓN DE VOTOS
 
 
 # %%
 #PARTE I: IMPORTACIÓN DE DATOS
 
+# %%
+import os
+dire=os.getcwd()
+print('Directorio de trabajo: ',os.getcwd())
 
 # %%
-#importar datos de las elecciones. Son del Ministerio del Interior adaptados
+import pandas as pd
+
+# %%
+#importar datos de las elecciones. Son del Ministerio del 
+#Interior adaptados
 import pandas as pd
 import warnings
-#importar datos de las elecciones. Son del Ministerio del Interior adaptados
 while True:
     voto=input ('introduce el nombre del fichero de resultados de la votación: ')
     year=input('y el año: ')
-    votos=voto+year+'.xlsx'
+    extension=input('y la extensión (xls, xlsm,xlsx): ')
+    votos=voto+year+'.'+extension
     try:
         print('nombre del fichero: ',votos)
-        df0 = pd.read_excel(votos,header=0)
+        df0 = pd.read_excel(votos,header=0,sheet_name='Hoja1')
         break
     except:
         print('no existe')
@@ -85,6 +87,32 @@ df2=pd.concat([df2,pd.DataFrame(party2.T)],ignore_index=True).copy()
 party2.T.head()
 
 # %%
+df2.to_pickle('partidos')
+
+
+# %%
+#definimos función que permita conocer la estructura de un DataFrame. Es muy
+#necesario para construir Data Frames.
+def estructura(my_Frame):
+    A=[]
+    B=[]
+    C=[]
+    my_Frame=my_Frame.keys()
+    my_List=list(my_Frame)
+    for i in range (len(my_List)):
+        A.append(my_List[i])
+        B.append(i)
+    col_list=list(zip(B,A))
+   #print('Longitud:',len(col_list),'\n', 'Posición y labels:','\n',col_list)
+    return col_list
+
+
+# %%
+estructura(df0)#da una lista de diccionarios donde cada diccionario es un
+#número:nombre de columna.
+
+
+# %%
 #creamos dos variables para número de provincias y de partidos
 N_PROV=len(df0)
 N_PARTIDOS=len(df2.T)
@@ -115,8 +143,15 @@ for i in range(17,151):
     if ('Diputados' in df0.loc[0].keys()[i]):
         W2.append(df0.loc[0].keys()[i])
 
-#print(W1)
-#print(W2)
+print(W1)
+print(W2)
+
+
+# %%
+Y=[]#nombres de columnas con los votos a cada partido
+for x in range(17,84):
+    if ('Votos' in W1[x]):
+        Y.append(W1[x])
 
 
 # %%
@@ -137,6 +172,9 @@ df0=pd.concat([DF1,DF2],axis=1)
 
 
 # %%
+df0['TOTAL_VOTANTES']/df0['CENSO_ELECTORAL']
+
+# %%
 #inserto participación por provincia
 df0.insert(loc = 13,
           column = '%PARTICIPACIÓN',
@@ -144,7 +182,15 @@ df0.insert(loc = 13,
 
 
 # %%
+df0.loc[2]['%PARTICIPACIÓN']
+
+
+# %%
 dfaux0=df0[W1[0:17]]#datos censales y resumidos por provincia
+
+
+# %%
+W1[17:]#votos
 
 
 # %%
@@ -156,7 +202,11 @@ Var=dict(zip(W1[17:],l))#diccionario que asigna votos a
 
 
 # %%
+Var
+
+# %%
 dfaux2=df0[W2[0:]]
+
 
 # %%
 #df1
@@ -772,8 +822,8 @@ for x in range (N_PROV):
     df7.loc[x,'PARTIDOS>3']=df7.loc[x][l].astype(bool).sum()
 
 
-# %%
-df7.loc[0]['PARTIDOS>3']
+ # %%
+ df7.loc[0]['PARTIDOS>3']
 
 # %%
 V=[]
@@ -825,138 +875,21 @@ if F=='Y' or F=='Y'.lower():
 
 
 # %%
-#PARTE IX: ARCHIVO DE FICHEROS PARA SIGUIENTES PROGRAMAS
-
-# %%
-New_l=[]
-for item in df2:
-    New_l.append(str(item)+'Votos')
-
-# %%
-New_d=[]
-for item in df2:
-    New_d.append(str(item)+'Diputados')
-
-# %%
-#creo un diccionario inverso
-b=[x[1:] for x in (vot_grupos)]
-party_grupo={}
-  
-for j in range(len(b)):
-    S=list(list_vgroups.values())[j]
-    #print(S)
-    T=vot_grupos[j]
-    #print(T)
-    #print(dict(zip(S,T)))
-    U=[vot_grupos[j][1:] for i in range(len(list_vgroups[vot_grupos[j]]))]
-    #print(dict(zip(S,U)),len(dict(zip(S,U))))
-    party_grupo.update(dict(zip(S,U)))
-
-# %%
-CA1=list(set(df0['COMUNIDAD']))
-
-# %%
-for x in range(len(CA1)):
-    CA1[x]=CA1[x].strip()
-
-# %%
-CA=dict.fromkeys(CA1, []) 
-
-
-# %%
-#diccionario con provincias correspondientes a cada CA
-CA=dict.fromkeys(CA1, []) 
-for y in CA1:
-    U=[]
-    print(y)
-    for x in range(len(df0)):
-        #print(df0.loc[x]['COMUNIDAD'].strip(),print(df0.loc[x]['NPROVINCIA']))
-        if df0.loc[x]['COMUNIDAD'].strip()==y:
-            #print(df0.loc[x]['COMUNIDAD'].strip())
-            print(df0.loc[x]['NPROVINCIA'])      
-            #print(df0.loc[x]['NPROVINCIA'])
-            U.append(list(df0.loc[:]['PROVINCIA'].keys())[x])
-            
-            
-            print(U)
-    CA[y]=U
-
-# %%
-dfprov=df0.loc[:][['NPROVINCIA','PROVINCIA']]
-
-# %%
-dfprov.head()
-
-# %%
-New_l
+#PARTE IX: ARCHIVO DE FICHEROS
 
 # %%
 #exporto ficheros de interés
 df0.to_pickle(dire+"\\df0.pkl")
-df2.to_pickle(dire+"\\df2.pkl")
-dfprov.to_pickle(dire+"\\dfprov.pkl")
 df1.to_pickle(dire+"\\df1.pkl")
-
+df2.to_pickle(dire+"\\df2.pkl")
 import pickle
 variables={}
 variables['N_PROV']=N_PROV
 variables['N_PARTIDOS']=N_PARTIDOS
-k = open(dire+"\\Var.pkl","wb")
-pickle.dump(Var,k)
-k.close()
 h = open(dire+"\\variables.pkl","wb")
 pickle.dump(variables,h)
 h.close()
-m = open(dire+"\\New_l.pkl","wb")
-pickle.dump(New_l,m)
-m.close()
-n = open(dire+"\\New_d.pkl","wb")
-pickle.dump(New_d,n)
-n.close()
-p = open(dire+"\\vot_grupos.pkl","wb")
-pickle.dump(vot_grupos,p)
-p.close()
 q = open(dire+"\\l.pkl","wb")
 pickle.dump(l,q)
 q.close()
-r=open(dire+"\\party_grupo.pkl","wb")
-pickle.dump(party_grupo,r)
-r.close()
-s=open(dire+"\\CA.pkl","wb")
-pickle.dump(CA,s)
-s.close()
-t=open(dire+"\\vot_grupos.pkl","wb")
-pickle.dump(vot_grupos,t)
-t.close()
-u=open(dire+"\\list_vgroups.pkl","wb")
-pickle.dump(list_vgroups,u)
-u.close()
-w=open(dire+"\\list_dgroups.pkl","wb")
-pickle.dump(list_dgroups,w)
-w.close()
 
-# %%
-raise SystemExit("El programa se detiene aquí, pero puede insertar celdas intermedias ")
-
-# %%
-F=input("¿DESEA EJECUTAR Eleccion2? (Y/N)\n")
-if F=='Y' or F=='Y'.lower():
-    with open("Eleccion2.py", mode="r", encoding="utf-8") as Eleccion2:
-        code = Eleccion2.read()
-        exec(code)
-    
-
-
-# %%
-aux.partido(30)
-
-# %%
-aux.Com_Aut()
-
-# %%
-aux.Votos_y_Diputados('Cataluña')
-
-# %%
-aux.Votos_y_Escaños_Grupos(df0)
-
-# %%
