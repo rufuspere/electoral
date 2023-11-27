@@ -40,7 +40,7 @@ while True:
     votos=voto+year+'.'+extension
     try:
         print('nombre del fichero: ',votos)
-        df0 = pd.read_excel(votos,header=0,sheet_name='Hoja1')
+        df0 = pd.read_excel(votos,header=0,sheet_name='Hoja')
         break
     except:
         print('no existe')
@@ -118,6 +118,20 @@ N_PROV=len(df0)
 N_PARTIDOS=len(df2.T)
 print(N_PROV,N_PARTIDOS)
 
+
+# %%
+estructura(df0)
+
+# %%
+for x in list_vgroups['VNACIONALISTAS']:
+    print(x,df0.loc[1][x])
+
+# %%
+ 
+df1.loc[j][list_vgroups[x]].sum()
+
+# %%
+df0.loc[:]['1']
 
 # %%
 #renombramos algunas columnas
