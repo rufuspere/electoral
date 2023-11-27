@@ -131,7 +131,7 @@ for x in list_vgroups['VNACIONALISTAS']:
 df1.loc[j][list_vgroups[x]].sum()
 
 # %%
-df0.loc[:]['1']
+df0.loc[1][:]
 
 # %%
 #renombramos algunas columnas
@@ -187,6 +187,11 @@ df0=pd.concat([DF1,DF2],axis=1)
 
 # %%
 df0['TOTAL_VOTANTES']/df0['CENSO_ELECTORAL']
+if (df0['TOTAL_VOTANTES']/df0['CENSO_ELECTORAL']).any()>1:
+    print ('¡ERROR!',df0['TOTAL_VOTANTES']/df0['CENSO_ELECTORAL'])
+else:
+    print ('¡OK!\n',df0['TOTAL_VOTANTES']/df0['CENSO_ELECTORAL'])
+    
 
 # %%
 #inserto participación por provincia
